@@ -58,6 +58,7 @@ public class GameWebSocket extends WebSocketController
 				String rot = "";
 				String thrust = "";
 				String color = "";
+				String score = "";
 				for (String pair: pairs)
 				{
 					String[] parts = pair.split(": ");
@@ -75,8 +76,10 @@ public class GameWebSocket extends WebSocketController
 						thrust = val;
 					else if (key.equals("color"))
 						color = val;
+					else if (key.equals("score"))
+						score = val;
 				}
-				game.move(name, x, y, rot, thrust, color);
+				game.move(name, x, y, rot, thrust, color, score);
 			}
 			
 			//Case: new bullet fired

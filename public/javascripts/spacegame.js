@@ -2,6 +2,8 @@ var ships = {};
 var bullets = [];
 var me;
 var ws;
+var label = {};
+label.duration = 1000;
 
 function SpaceGame(ctx, name, gameUrl)
 {
@@ -9,6 +11,7 @@ function SpaceGame(ctx, name, gameUrl)
   var liElement = document.getElementById(name);
   liElement.style.color = me.color;
   this.ctx = ctx;
+  ctx.font = "20px Georgia";
   //this.ctx = document.getElementById('gameCanv').getContext('2d');
   ships[name] = me;
 
@@ -29,10 +32,13 @@ function SpaceGame(ctx, name, gameUrl)
     msgType = 'bullet';
     if (msgType === e.data.substring(0, msgType.length))
       onBulletRecv(e.data);
-
+    
     msgType = 'join';
     if (msgType === e.data.substring(0, msgType.length))
-      onJoin(e.data);
+    {
+      ws.send(me.genMoveString());
+      //onJoin(e.data);
+    }
   };
 
   //start animation
@@ -50,8 +56,11 @@ function SpaceGame(ctx, name, gameUrl)
       stillThere.push(bullets[b]);
     }
     bullets = stillThere.splice(0);
-  
+
+    if (new Date().getTime() - label.t0 < label.duration)
+      ctx.fillText(label.msg, 300, 450);
   }
+
   setInterval(this.draw, 10);
 
   //controls
@@ -88,6 +97,7 @@ function Ship(name)
   this.height = 30;
   this.thrust = 0;
   this.color = getRandomColor();
+  this.score = 0;
 
   this.draw = function()
   {
@@ -145,6 +155,7 @@ function Ship(name)
         if (distSq < (this.width * this.width))
         {
           //handle collision
+          //if i got it
           if (this.name == me.name)
           {
             //announce hit
@@ -154,6 +165,16 @@ function Ship(name)
             me.rot = -Math.PI / 2;
             ws.send(this.genMoveString());
             alert('you got hit');
+          }
+          else if (bullets[i].name == me.name) //i hit them
+          {
+            me.score++;
+            var playerLi = document.getElementById(me.name);
+            playerLi.innerHTML = me.name + ": " + me.score;
+            ws.send(me.genMoveString());
+            //set the label
+            label.msg = "Hit! +1 point"
+            label.t0 = new Date().getTime();
           }
         }
         else
@@ -174,6 +195,7 @@ function Ship(name)
     data.push('rot: '     + this.rot);
     data.push('thrust: '  + this.thrust);
     data.push('color: '   + this.color);
+    data.push('score: '   + this.score)
     return data.join('&');
   };
 }
@@ -237,7 +259,7 @@ function Bullet(ship)
 function onMoveRecv(data, ships)
 {
   var pairs = data.split('&');
-  var name, x, y, rot, thrust, color;
+  var name, x, y, rot, thrust, color, score;
   pairs.forEach(function(e)
   {
     var parts = e.split(": ");
@@ -255,11 +277,14 @@ function onMoveRecv(data, ships)
       thrust = +val;
     else if (key === "color")
       color = val;
+    else if (key === "score")
+      score = +val;
   });
   var other = ships[name];
   if (!other)
   {
     other = new Ship(name);
+    addPlayerLiElement(name);
     var liElement = document.getElementById(name);
     liElement.style.color = color;
   }
@@ -269,6 +294,11 @@ function onMoveRecv(data, ships)
   other.rot = rot;
   other.thrust = thrust;
   other.color = color;
+  if (other.score != score)
+  {
+    var playerLi = document.getElementById(name);
+    playerLi.innerHTML = name + ": " + score;
+  }
   ships[name] = other;
 };
 
@@ -298,11 +328,16 @@ function onJoin(data)
 {
   var parts = data.split(': ');
   var newPlayerName = parts[1];
+  addPlayerLiElement(newPlayerName);
+}
+
+function addPlayerLiElement(name)
+{
   var newP = document.createElement("li");
-  newP.innerHTML = newPlayerName;
-  newP.id = newPlayerName;
+  newP.innerHTML = name;
+  newP.id = name;
   var otherPlist = document.getElementById('otherP');
-  otherPlist.appendChild(newP);
+  otherPlist.appendChild(newP); 
 }
 
 

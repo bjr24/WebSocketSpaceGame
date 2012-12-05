@@ -20,9 +20,9 @@ public class Game
 	}
 	
 	public void move(String player, String x, String y, 
-			String rot, String thrust, String color)
+			String rot, String thrust, String color, String score)
 	{
-		gameEvents.publish(new Move(player, x, y, rot, thrust, color));
+		gameEvents.publish(new Move(player, x, y, rot, thrust, color, score));
 	}
 	
 	public void fire(String player, String x, String y, String rot)
@@ -59,8 +59,9 @@ public class Game
 		final public String rot;
 		final public String thrust;
 		final public String color;
+		final public String score;
 		public Move(String player, String x, String y, 
-				String rot, String thrust, String color)
+				String rot, String thrust, String color, String score)
 		{
 			super("move");
 			this.player = player;
@@ -69,11 +70,12 @@ public class Game
 			this.rot = rot;
 			this.thrust = thrust;
 			this.color = color;
+			this.score = score;
 		}
 		public String toString()
 		{
-			return String.format( "move: %s&x: %s&y: %s&rot: %s&thrust: %s&color: %s"
-								  ,player,  x,    y,    rot,    thrust,    color );
+			return String.format( "move: %s&x: %s&y: %s&rot: %s&thrust: %s&color: %s&score: %s"
+								  ,player,  x,    y,    rot,    thrust,    color,    score );
 		}
 	}
 	
