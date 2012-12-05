@@ -1,0 +1,109 @@
+#{extends 'main.html' /}
+#{set title:'waitForPlayers.html' /}
+
+<h4> Welcome ${name} </h4>
+<p> Waiting for players to join game: ${gameId} </p>
+
+<div>
+	<h4> Other Players </h4>
+	<ul id="otherP" />
+</div> 
+
+<a> 
+	<button id='startBut' onclick='onClickStart()'> Start </button>
+</a>
+
+<script>
+	var nPlayers = 0;
+	
+	var ws = null;
+	
+	startBut.style.visibility = 'hidden';
+	
+	function onClickStart()
+	{
+		ws.send("start: ${gameId}");
+	}
+	
+	
+	function onNewPlayer(pName)
+	{		
+		var existing = document.getElementById(pName);
+		if (existing)
+		{
+			if (existing.id == '${name}')
+			{
+				alert('!');
+				location.href = '@{Application.index}';
+			}
+			return;
+		}
+		
+		var newP = document.createElement("li");
+		newP.innerHTML = pName;
+		newP.id = pName;
+
+		otherP.appendChild(newP);
+		nPlayers++;
+		if (nPlayers > 1)
+			startBut.style.visibility = 'visible';
+	}
+	
+	function onLeave(pName)
+	{
+		var p = document.getElementById(pName);
+		if (p)
+			otherP.removeChild(p)
+		
+		nPlayers--;
+		if (nPlayers < 2)
+			startBut.style.visibility = 'hidden';
+	}
+	
+	function onStart(gameId)
+	{
+		//goto the webpage for this game
+		location.href = '@{Application.gamePage(name, gameId)}';
+	}
+	
+	function makeButton()
+	{
+		startBut.style.visibility = 'visible';
+		/*
+		var but = document.createElement("button");
+		but.innerHTML = 'Start';
+		startDiv.appendChild(but);
+		buttonIsThere = true;
+		*/
+	}
+	
+	var existing = document.getElementById('${name}');
+	if (existing)
+	{
+		alert("Player with same name already in that game.");
+		location.href = '@{Application.index}';
+	}
+	else
+	{
+		ws = new WebSocket('@@{LobbyWebSocket.join(name, gameId)}');
+	
+		ws.onmessage = function(e)
+		{
+			var parts = e.data.split(': ');
+			var type = parts[0];
+			var val = parts[1];
+			if (type == 'join')
+				onNewPlayer(val);
+			else if (type == 'leave')
+				onLeave(val);
+			else if (type == 'start')
+				onStart(val);
+		}
+	
+		ws.onerror = function(e)
+		{
+			console.log(e);
+		}
+	}
+	
+</script>

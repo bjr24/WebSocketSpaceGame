@@ -1,0 +1,25 @@
+#{extends 'main.html' /}
+#{set title:'Space Wars' /}
+
+<script src="@{'/public/javascripts/spacegame.js'}"></script>
+ 
+<style type="text/css">
+	canvas { border: 1px solid black; }
+</style>
+
+<h2>GameId: ${gameId}</h2>
+
+<canvas id="gameCanv" width="640" height="480"> 
+	Get a browser that supports canvas 
+</canvas>
+
+<p>Players: </p>
+<ul id="otherP"> 
+	<li id="${name}"> ${name} </li>
+</ul>
+
+
+<script>
+	var ctx = document.getElementById('gameCanv').getContext('2d');
+	var sg = new SpaceGame(ctx, '${name}' ,'@@{GameWebSocket.join(name, gameId)}');
+</script>
