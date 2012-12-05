@@ -1,4 +1,4 @@
-WebSocketSpaceGame
+[WebSocketSpaceGame](http://bjr24.github.com/WebSocketSpaceGame/)
 ==================
 
 The client code is [here](https://github.com/bjr24/WebSocketSpaceGame/blob/master/public/javascripts/spacegame.js)
