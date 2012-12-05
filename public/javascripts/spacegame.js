@@ -73,10 +73,10 @@ function SpaceGame(ctx, name, gameUrl)
     if (e.charCode == "x".charCodeAt(0))
       me.rot += .5;
     //move forward
-    if (e.charCode == ".".charCodeAt(0))
+    if (e.charCode == ",".charCodeAt(0))
       me.moveForward(25);
     //fire bullet
-    if (e.charCode == "/".charCodeAt(0))
+    if (e.charCode == ".".charCodeAt(0))
     {
       var b = new Bullet(me);
       bullets.push(b);
