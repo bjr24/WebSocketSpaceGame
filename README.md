@@ -20,3 +20,13 @@ Installation
 
 To run a game more than one player has to join the same game. This can be done by using different browsers, 
 or the same browser in separate windows.
+
+Controls
+------------------
+**z :** Rotate left
+
+**x :** Rotate right
+
+**, :** Move forward
+
+**. :** Fire
