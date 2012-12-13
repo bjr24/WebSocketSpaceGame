@@ -208,7 +208,7 @@ function Bullet(ship)
   this.y = ship.y;
   this.name = ship.name
   this.rot = ship.rot;
-  this.thrust = 200;
+  this.thrust = 250;
   this.color = ship.color;
 
   this.draw = function()
@@ -231,7 +231,7 @@ function Bullet(ship)
 
   this.update = function(dt)
   {
-    var dist = dt * 1;
+    var dist = dt * 2;
     dist = dist > this.thrust ? this.thrust : dist; 
     this.thrust -= dist;
     this.x += Math.cos(this.rot) * dist;
