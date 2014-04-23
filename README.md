@@ -1,6 +1,10 @@
 [WebSocketSpaceGame](http://bjr24.github.com/WebSocketSpaceGame/)
 ==================
 
+<script>
+  alert("hello world");
+</script>
+
 The client code is [here](https://github.com/bjr24/WebSocketSpaceGame/blob/master/public/javascripts/spacegame.js)
 
 The server code for controlling the server side websocket is [here](https://github.com/bjr24/WebSocketSpaceGame/blob/master/app/controllers/GameWebSocket.java)
